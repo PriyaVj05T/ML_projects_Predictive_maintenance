@@ -7,3 +7,6 @@
 -- create requirements.txt
 -- bash init_setup.sh in linux bash terminal
 -- activate environment
+-- run template.py
+-- run requirements.txt or init_setup.sh
+-- or run setup.py (importing local package)
