@@ -16,7 +16,7 @@ def get_requirements(file_path:str)->List[str]:
     return requirements"""
 
 setup(
-    name='3-phase-IM-Fault-detection',
+    name='FaultDetectionTPIM',
     version='0.0.1',
     author='Priya Tejwani',
     author_email='vijayvargiyapriya05@gmail.com',

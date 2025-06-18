@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-package_name="Fault-detection"
+package_name="FaultDetectionTPIM"
 
 list_of_files=[
     ".github/workflows/.gitkeep",
