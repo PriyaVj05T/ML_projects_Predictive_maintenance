@@ -24,7 +24,7 @@ class DataIngestion:
             #reading data
             data=pd.read_csv(Path(os.path.join("notebooks/data", "predictive_maintenance.csv")))
             logging.info("i have read dataset as df")
-            os.makedirs(os.path.dirname(os.path.join(self.ingestion_config.raw_data_path)), exist_ok=True)
+            os.makedirs(os.path.dirname(os.path.join(self.ingestion_config.raw_data_path)), exist_ok=True)#only providing artifacts folder
             data.to_csv(self.ingestion_config.raw_data_path, index=False)
             logging.info("i have saved dataset as raw_data in artifacts folder")
 
@@ -36,7 +36,11 @@ class DataIngestion:
             train_data.to_csv(self.ingestion_config.train_data_path, index=False)
             test_data.to_csv(self.ingestion_config.test_data_path, index=False)
             logging.info("Here train and test data saved in artifacts folder, data ingestion part completed")
+            return (
+                self.ingestion_config.train_data_path,
+                self.ingestion_config.test_data_path
 
+            )
         except Exception as e:    
             logging.info("exception occured during data ingestion ")
             raise CustomException(e,sys)
