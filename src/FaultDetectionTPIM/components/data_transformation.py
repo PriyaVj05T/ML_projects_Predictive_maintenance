@@ -1,7 +1,7 @@
 import sys
 import os
 import pandas as pd
-import numpy
+import numpy as np
 from src.FaultDetectionTPIM.logger import logging
 from src.FaultDetectionTPIM.exception import CustomException
 from dataclasses import dataclass
@@ -79,18 +79,25 @@ class DataTransformation:
             input_feature_train_df= train_df.drop(columns=drop_columns,axis=1)
             input_feature_test_df= test_df.drop(columns=drop_columns,axis=1)
             target_feature_train_df=train_df[target_column_name]
+            target_feature_test_df=test_df[target_column_name]
 
             input_feature_train_arr=preprocessing_obj.fit_transform(input_feature_train_df)
             #for validation
             input_feature_test_arr=preprocessing_obj.fit_transform(input_feature_test_df)
             logging.info("Applying preprocessing object on training and test datasets")
-
+            train_arr= np.c_(input_feature_train_arr, np.array( target_feature_train_df))
+            test_arr=np.c_(input_feature_test_arr,np.array(target_feature_test_df))
             #saving the preprocessing pickle file
             save_object(
                 file_path=self.data_transformation_config.preprocessor_obj_file_path,
                 obj=preprocessing_obj
             )
+            logging.info("preprocessor picle file saved")
 
+            return (
+                train_arr,
+                test_arr
+            )
         except Exception as e:
             logging.info("Exception occured in the initiate_data_transformation")
             raise CustomException(e,sys)
