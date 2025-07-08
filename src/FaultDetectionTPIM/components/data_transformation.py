@@ -76,6 +76,21 @@ class DataTransformation:
             target_column_name=['target','failure_type']
             drop_columns=[target_column_name,'id']
 
+            input_feature_train_df= train_df.drop(columns=drop_columns,axis=1)
+            input_feature_test_df= test_df.drop(columns=drop_columns,axis=1)
+            target_feature_train_df=train_df[target_column_name]
+
+            input_feature_train_arr=preprocessing_obj.fit_transform(input_feature_train_df)
+            #for validation
+            input_feature_test_arr=preprocessing_obj.fit_transform(input_feature_test_df)
+            logging.info("Applying preprocessing object on training and test datasets")
+
+            #saving the preprocessing pickle file
+            save_object(
+                file_path=self.data_transformation_config.preprocessor_obj_file_path,
+                obj=preprocessing_obj
+            )
+
         except Exception as e:
             logging.info("Exception occured in the initiate_data_transformation")
             raise CustomException(e,sys)
