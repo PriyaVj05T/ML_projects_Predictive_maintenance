@@ -30,3 +30,4 @@ class ModelTrainer:
 
         except Exception as e:
             logging.info("Exception occur during initiating model training")
+            raise CustomException(e,sys)
