@@ -10,6 +10,9 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OrdinalEncoder,StandardScaler
 from src.FaultDetectionTPIM.utils import save_object
+from sklearn.preprocessing import OrdinalEncoder, MinMaxScaler, RobustScaler
+import pandas as pd
+from utils.utils import get_logger
 
 @dataclass
 class DataTransformationConfig:
@@ -62,6 +65,45 @@ class DataTransformation:
             logging.info("Exception occured in the get_data_transformation")
 
             raise CustomException(e,sys)
+        
+       
+
+    def clean_and_encode(df):
+        logger = get_logger('DataTransformation')
+        try:
+            df = df.drop(['UDI', 'Product ID'], axis=1)
+            df = df.rename(columns={
+                'Air temperature [K]': 'Air temperature',
+                'Process temperature [K]': 'Process temperature',
+                'Rotational speed [rpm]': 'Rotational speed',
+                'Torque [Nm]': 'Torque',
+                'Tool wear [min]': 'Tool wear'
+            })
+            failure_types = df['Failure Type'].unique().tolist()
+            ord_enc = OrdinalEncoder(categories=[['L','M','H'], failure_types])
+            enc = ord_enc.fit_transform(df[['Type', 'Failure Type']])
+            df.drop(['Type', 'Failure Type'], axis=1, inplace=True)
+            df[['Type', 'Failure Type']] = enc
+            return df
+        except Exception as e:
+            logger.error(f"Error in clean_and_encode: {e}")
+            raise
+
+    def scale_features(df):
+        logger = get_logger('DataTransformation')
+        try:
+            robust_cols = ['Rotational speed', 'Torque']
+            scaler_robust = RobustScaler()
+            df[robust_cols] = scaler_robust.fit_transform(df[robust_cols])
+
+            minmax_cols = ['Air temperature', 'Process temperature', 'Tool wear']
+            scaler_minmax = MinMaxScaler()
+            df[minmax_cols] = scaler_minmax.fit_transform(df[minmax_cols])
+            return df
+        except Exception as e:
+            logger.error(f"Error in scale_features: {e}")
+            raise
+
 
     def initialize_data_transformation(self,train_path, test_path):   
         try:

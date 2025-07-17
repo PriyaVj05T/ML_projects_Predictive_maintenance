@@ -9,12 +9,19 @@ from src.FaultDetectionTPIM.utils import save_object
 from src.FaultDetectionTPIM.utils import evaluate_model
 
 from sklearn.preprocessing import OrdinalEncoder, MinMaxScaler, RobustScaler
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, cross_val_score, cross_val_predict, StratifiedShuffleSplit
-from sklearn.ensemble import RandomForestClassifier, BaggingClassifier
-from imblearn.ensemble import BalancedRandomForestClassifier, BalancedBaggingClassifier
-from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import TomekLinks
 
+
+from models.balanced_rf_model import train_balanced_rf
+from models.balanced_bagging_model import train_balanced_bagging
+from models.balanced_bagging_tomek_model import train_balanced_bagging_tomek
+from utils.metrics import evaluate_model
+from sklearn.model_selection import train_test_split
+import yaml
+
+with open("config/config.yaml", "r") as f:
+    config = yaml.safe_load(f)
+
+THRESHOLD = config['threshold']
 
 @dataclass
 class ModelTrainerConfig:
@@ -26,8 +33,7 @@ class ModelTrainer:
 
     def initiate_model_training(self):
         try:
-            pass
-
+          pass
         except Exception as e:
             logging.info("Exception occur during initiating model training")
             raise CustomException(e,sys)
